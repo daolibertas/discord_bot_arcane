@@ -94,10 +94,6 @@ def upsert_message(message, username, level):
   except Exception as e:
     print(f"❌ Error during upsert operation: {e}")
 
-@client.event
-async def on_ready():
-    print(f"✅ Bot is connected as {client.user}")
-
 async def process_message(message):
   # Check if the message contains a mention
   if message.mentions:
@@ -110,16 +106,11 @@ async def process_message(message):
       level = int(match.group(1))
       upsert_message(message, username, level)
 
+
 @client.event
 async def on_message(message):
   if message.channel.id == CHANNEL_ID:
-    username = message.author.name
-    try:
-      # Extract the level from the message (e.g., "Level 5")
-      level = int(message.content.split("Level ")[1])
-      upsert_message(message, username, level)
-    except (IndexError, ValueError):
-      print(f"⚠️ Message ignored: {message.content}")
+    await process_message(message)
 
 @client.event
 async def on_ready():
